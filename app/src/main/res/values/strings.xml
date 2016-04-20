@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Lista de contatos</string>
+    <string name="action_settings">Settings</string>
+    <string name="prompt_name">Nome</string>
+    <string name="prompt_number">Número de telefone</string>
+
+    <string name="action_add">Adicionar</string>
+
+    <string name="action_add_title">Adicionar contato</string>
+
+    <string name="add_contact_snack">Contato foi adicionado!</string>
+    <string name="remove_contact_snack">Contato foi removido!</string>
+    <string name="delete">Deletar</string>
+    <string name="delete_contact_title">Deletar contato</string>
+
+</resources>

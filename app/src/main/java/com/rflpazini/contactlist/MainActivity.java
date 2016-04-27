@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
                         TextView textView = (TextView) item.findViewById(android.R.id.text1);
                         String name = textView.getText().toString();
-                        showNumber(position, name);
+                        showNumber(name);
                     }
                 }
         );
@@ -195,9 +195,7 @@ public class MainActivity extends AppCompatActivity {
         db.close();
     }
 
-    private void showNumber(int position, String name) {
-        int pos = position + 1;
-        Log.i("MAIN", pos + ":" + name);
+    private void showNumber(String name) {
         SQLiteDatabase db = mHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " +
                 DbInfo.DbEntry.TABLE + " WHERE " +
@@ -211,7 +209,13 @@ public class MainActivity extends AppCompatActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setMessage(phone)
-                        .setTitle(name);
+                        .setTitle(name)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
                 AlertDialog alert = builder.create();
                 alert.show();
             }

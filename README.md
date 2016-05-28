@@ -1,5 +1,5 @@
 # ContactList
-It's an app made to complete  a class project. This just work like a contact list on your phone where you can add, view and delete any contact from this list. I'll implement a the MVP architecture to this project soon as possible and make this an example from my web site.
+It's an app made to complete  a class project. This just work like a contact list on your phone where you can add, view and delete any contact from this list. I'll implement the MVP architecture to this project soon as possible and make this an example from my web site.
 
 ## What I used on this project
 

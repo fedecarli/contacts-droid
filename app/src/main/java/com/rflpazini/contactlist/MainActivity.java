@@ -32,6 +32,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    protected final String TAG = MainActivity.class.getSimpleName();
+
     private ListView listView;
     private ArrayList<String> items;
     private ArrayList<String> subItems;
@@ -160,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteContact(String name) {
-        Log.i("TESTE", name);
         SQLiteDatabase db = mHelper.getWritableDatabase();
         db.delete(DbInfo.DbEntry.TABLE,
                 DbInfo.DbEntry.CONT_NAME + " = ?",

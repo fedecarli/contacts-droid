@@ -11,7 +11,6 @@ public class DbInfo {
 
     public class DbEntry implements BaseColumns {
         public static final String TABLE = "contacts";
-
         public static final String CONT_NAME = "name";
         public static final String CONT_PHONE = "phone";
     }

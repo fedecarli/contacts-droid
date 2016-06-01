@@ -3,6 +3,7 @@ package com.rflpazini.contactlist;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.opengl.EGLExt;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import com.rflpazini.contactlist.db.DbHelper;
 import com.rflpazini.contactlist.db.DbInfo;
+import com.rflpazini.contactlist.model.User;
 import com.rflpazini.contactlist.utils.Constants;
 
 import java.util.ArrayList;
@@ -114,7 +116,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
                         TextView textView = (TextView) item.findViewById(android.R.id.text1);
                         String name = textView.getText().toString();
-                        showNumber(name);
+                        Context context = item.getContext();
+                        showNumber(name, context, position);
                     }
                 }
         );
@@ -130,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText nameDialog = (EditText) dialogView.findViewById(R.id.nameDialog);
         final EditText phoneDialog = (EditText) dialogView.findViewById(R.id.phoneDialog);
         phoneDialog.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        final EditText emailDialog = (EditText) dialogView.findViewById(R.id.emailDialog);
 
         builder.setTitle(title)
                 .setPositiveButton(R.string.action_add,
@@ -139,8 +143,9 @@ public class MainActivity extends AppCompatActivity {
                                                 int which) {
                                 String name = nameDialog.getText().toString();
                                 String number = phoneDialog.getText().toString();
+                                String email = emailDialog.getText().toString();
 
-                                addContactDb(name, number);
+                                addContactDb(name, number, email);
                                 dialog.dismiss();
                                 showToast(Constants.ADD_CONTACT);
                             }
@@ -150,11 +155,12 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void addContactDb(String name, String phone) {
+    private void addContactDb(String name, String phone, String email) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DbInfo.DbEntry.CONT_NAME, name);
         values.put(DbInfo.DbEntry.CONT_PHONE, phone);
+        values.put(DbInfo.DbEntry.CONT_EMAIL, email);
 
         db.insertWithOnConflict(DbInfo.DbEntry.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
@@ -196,29 +202,30 @@ public class MainActivity extends AppCompatActivity {
         db.close();
     }
 
-    private void showNumber(String name) {
+    private void showNumber(String name, Context context, int position) {
         SQLiteDatabase db = mHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " +
                 DbInfo.DbEntry.TABLE + " WHERE " +
                 DbInfo.DbEntry.CONT_NAME + "='" +
                 name + "'", null);
 
+        User user = new User();
+
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 int indexNumber = cursor.getColumnIndex(DbInfo.DbEntry.CONT_PHONE);
-                String phone = cursor.getString(indexNumber);
+                int indexEmail = cursor.getColumnIndex(DbInfo.DbEntry.CONT_EMAIL);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage(phone)
-                        .setTitle(name)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                AlertDialog alert = builder.create();
-                alert.show();
+                user.setName(name);
+                user.setPhone(cursor.getString(indexNumber));
+                user.setEmail(cursor.getString(indexEmail));
+
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra(DetailActivity.EXTRA_POSITION, position);
+                Bundle mBundle = new Bundle();
+                mBundle.putSerializable(Constants.SER_KEY, user);
+                intent.putExtras(mBundle);
+                context.startActivity(intent);
             }
             cursor.close();
         }

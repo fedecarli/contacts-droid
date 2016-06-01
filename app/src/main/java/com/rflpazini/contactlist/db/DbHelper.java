@@ -18,7 +18,8 @@ public class DbHelper extends SQLiteOpenHelper {
         String createTable = "CREATE TABLE " + DbInfo.DbEntry.TABLE + " ( " +
                 DbInfo.DbEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 DbInfo.DbEntry.CONT_NAME + " TEXT NOT NULL, " +
-                DbInfo.DbEntry.CONT_PHONE + " TEXT NOT NULL);";
+                DbInfo.DbEntry.CONT_PHONE + " TEXT NOT NULL," +
+                DbInfo.DbEntry.CONT_EMAIL + " TEXT NOT NULL);";
         db.execSQL(createTable);
     }
 

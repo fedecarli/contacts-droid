@@ -3,6 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="prompt_name">Nome</string>
     <string name="prompt_number">Número de telefone</string>
+    <string name="prompt_email">Email</string>
 
     <string name="action_add">Adicionar</string>
 

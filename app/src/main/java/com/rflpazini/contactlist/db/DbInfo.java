@@ -6,7 +6,7 @@ import android.provider.BaseColumns;
  * Created by rflpazini on 4/19/16.
  */
 public class DbInfo {
-    public static final String DB_NAME = "com.rflpazini.contactlist.db";
+    public static final String DB_NAME = "com.rflpazini.contactlist.data";
     public static final int DB_VERSION = 2;
 
     public class DbEntry implements BaseColumns {

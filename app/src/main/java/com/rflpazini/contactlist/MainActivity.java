@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         mHelper = new DbHelper(this);
 
-        updateContacts();
+
         addListeners();
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                                             @Override
                                             public void onClick(DialogInterface dialog,
                                                                 int which) {
-                                                deleteContact(name);
+//                                                deleteContact(name);
                                                 dialog.dismiss();
                                                 showToast(Constants.REMOVE_CONTACT);
                                             }
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                         TextView textView = (TextView) item.findViewById(android.R.id.text1);
                         String name = textView.getText().toString();
                         Context context = item.getContext();
-                        showNumber(name, context, position);
+//                        showNumber(name, context, position);
                     }
                 }
         );
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                                 String number = phoneDialog.getText().toString();
                                 String email = emailDialog.getText().toString();
 
-                                addContactDb(name, number, email);
+//                                addContactDb(name, number, email);
                                 dialog.dismiss();
                                 showToast(Constants.ADD_CONTACT);
                             }
@@ -155,81 +155,6 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void addContactDb(String name, String phone, String email) {
-        SQLiteDatabase db = mHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DbInfo.DbEntry.CONT_NAME, name);
-        values.put(DbInfo.DbEntry.CONT_PHONE, phone);
-        values.put(DbInfo.DbEntry.CONT_EMAIL, email);
-
-        db.insertWithOnConflict(DbInfo.DbEntry.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-        db.close();
-        updateContacts();
-    }
-
-    private void deleteContact(String name) {
-        SQLiteDatabase db = mHelper.getWritableDatabase();
-        db.delete(DbInfo.DbEntry.TABLE,
-                DbInfo.DbEntry.CONT_NAME + " = ?",
-                new String[]{name});
-        db.close();
-        updateContacts();
-    }
-
-    private void updateContacts() {
-        items = new ArrayList<String>();
-        SQLiteDatabase db = mHelper.getReadableDatabase();
-        Cursor cursor = db.query(DbInfo.DbEntry.TABLE,
-                new String[]{DbInfo.DbEntry._ID, DbInfo.DbEntry.CONT_NAME,
-                        DbInfo.DbEntry.CONT_PHONE}, null, null, null, null, null);
-
-        while (cursor.moveToNext()) {
-            int idx = cursor.getColumnIndex(DbInfo.DbEntry.CONT_NAME);
-            items.add(cursor.getString(idx));
-        }
-
-        if (itemsAdapter == null) {
-            itemsAdapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_list_item_1,
-                    items);
-            listView.setAdapter(itemsAdapter);
-        } else {
-            itemsAdapter.clear();
-            itemsAdapter.addAll(items);
-            itemsAdapter.notifyDataSetChanged();
-        }
-        cursor.close();
-        db.close();
-    }
-
-    private void showNumber(String name, Context context, int position) {
-        SQLiteDatabase db = mHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " +
-                DbInfo.DbEntry.TABLE + " WHERE " +
-                DbInfo.DbEntry.CONT_NAME + "='" +
-                name + "'", null);
-
-        User user = new User();
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                int indexNumber = cursor.getColumnIndex(DbInfo.DbEntry.CONT_PHONE);
-                int indexEmail = cursor.getColumnIndex(DbInfo.DbEntry.CONT_EMAIL);
-
-                user.setName(name);
-                user.setPhone(cursor.getString(indexNumber));
-                user.setEmail(cursor.getString(indexEmail));
-
-                Intent intent = new Intent(context, DetailActivity.class);
-                intent.putExtra(DetailActivity.EXTRA_POSITION, position);
-                Bundle mBundle = new Bundle();
-                mBundle.putSerializable(Constants.SER_KEY, user);
-                intent.putExtras(mBundle);
-                context.startActivity(intent);
-            }
-            cursor.close();
-        }
-    }
 
     protected void showToast(String type) {
         if (type.equals(Constants.ADD_CONTACT)) {
